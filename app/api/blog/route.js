@@ -1,6 +1,7 @@
 import cloudinary from "@/lib/cloudinary";
 import ConnectDB from "@/lib/config/db";
 import BlogModel from "@/lib/models/BlogModel";
+import { cleanHTML } from "@/lib/utils/cleanHTML";
 // import { writeFile } from "fs/promises";
 const fs = require("fs");
 
@@ -23,6 +24,8 @@ export async function GET(request) {
 export async function POST(request) {
   await ConnectDB();
   const formData = await request.formData();
+  const rawDescription = formData.get("description");
+  const cleanedDescription = cleanHTML(rawDescription);
   const image = formData.get("image");
 
   // if (!image || typeof image === "string") {
@@ -59,7 +62,7 @@ export async function POST(request) {
 
   const blogData = {
     title: `${formData.get("title")}`,
-    description: `${formData.get("description")}`,
+    description: cleanedDescription,
     category: `${formData.get("category")}`,
     author: `${formData.get("author")}`,
     // image: `${imgUrl}`,

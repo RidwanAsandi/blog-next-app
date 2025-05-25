@@ -65,7 +65,9 @@ const page = ({ params }) => {
           className="object-cover border-4 border-white"
         />
         <h1 className="my-8 text-[26px] font-semibold">Introductiion:</h1>
-        <p dangerouslySetInnerHTML={{ __html: data.description }}></p>
+        <div className="prose whitespace-pre-wrap [p:empty]:hidden">
+          <p dangerouslySetInnerHTML={{ __html: data.description }}></p>
+        </div>
         <div className="my-24">
           <p className="text-black font-semibold my-4">
             Share this article on social media

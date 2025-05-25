@@ -9,3 +9,9 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+p:empty {
+  display: none;
+  margin: 0;
+  padding: 0;
+}
