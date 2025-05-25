@@ -24,24 +24,27 @@ export async function POST(request) {
   const formData = await request.formData();
   const image = formData.get("image");
 
-  if (!image || typeof image === "string") {
-    return NextResponse.json({ error: "No image uploaded" }, { status: 400 });
-  }
+  // if (!image || typeof image === "string") {
+  //   return NextResponse.json({ error: "No image uploaded" }, { status: 400 });
+  // }
 
-  const timestamp = Date.now();
-  const imageByData = await image.arrayBuffer();
-  const buffer = Buffer.from(imageByData);
-  const path = `./public/${timestamp}_${image.name}`;
-  await writeFile(path, buffer);
-  const imgUrl = `/${timestamp}_${image.name}`;
-  console.log(imgUrl);
+  // const timestamp = Date.now();
+  // const imageByData = await image.arrayBuffer();
+  // const buffer = Buffer.from(imageByData);
+  // const path = `./public/${timestamp}_${image.name}`;
+  // await writeFile(path, buffer);
+  // const imgUrl = `/${timestamp}_${image.name}`;
+  // console.log(imgUrl);
+
+  const imgUrl = "/default.png";
 
   const blogData = {
     title: `${formData.get("title")}`,
     description: `${formData.get("description")}`,
     category: `${formData.get("category")}`,
     author: `${formData.get("author")}`,
-    image: `${imgUrl}`,
+    // image: `${imgUrl}`,
+    image: imgUrl,
     authorImg: `${formData.get("authorImg")}`,
   };
 
