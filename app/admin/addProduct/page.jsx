@@ -9,6 +9,7 @@ import TiptapEditor from "@/components/TiptapEditor";
 
 const page = () => {
   const [image, setImage] = useState(false);
+  const [clearEditor, setClearEditor] = useState(false);
   const [data, setData] = useState({
     title: "",
     description: "",
@@ -45,6 +46,7 @@ const page = () => {
           author: "Ridwan Asandi",
           authorImg: "/author_img.png",
         });
+        setClearEditor(true);
       } else {
         toast.error("Gagal Menyimpan");
       }
@@ -93,6 +95,8 @@ const page = () => {
           setDescription={(value) =>
             setData((prev) => ({ ...prev, description: value }))
           }
+          clearTrigger={clearEditor}
+          onClearDone={() => setClearEditor(false)}
         />
         <p className="text-xl mt-4">Blog category</p>
         <select
@@ -104,7 +108,7 @@ const page = () => {
           <option value="Startup">Startup</option>
           <option value="Technology">Technology</option>
           <option value="Lifestyle">Lifestyle</option>
-          <option value="Lifestyle">Otomotif</option>
+          <option value="Otomotif">Otomotif</option>
         </select>
         <div className="flex justify-start items-center">
           <button

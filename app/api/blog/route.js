@@ -5,14 +5,9 @@ const fs = require("fs");
 
 const { NextResponse } = require("next/server");
 
-const LoadDB = async () => {
-  await ConnectDB();
-};
-
-LoadDB();
-
 //API Endpoint to get all blogs
 export async function GET(request) {
+  await ConnectDB();
   const blogId = request.nextUrl.searchParams.get("id");
   if (blogId) {
     const blog = await BlogModel.findById(blogId);
@@ -25,6 +20,7 @@ export async function GET(request) {
 
 //API Endpoint for Uploading blogs
 export async function POST(request) {
+  await ConnectDB();
   const formData = await request.formData();
   const image = formData.get("image");
 
@@ -56,6 +52,7 @@ export async function POST(request) {
 }
 
 export async function DELETE(request) {
+  await ConnectDB();
   const id = await request.nextUrl.searchParams.get("id");
   const blog = await BlogModel.findById(id);
   fs.unlink(`./public${blog.image}`, () => {});

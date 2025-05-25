@@ -4,7 +4,12 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect } from "react";
 
-const TiptapEditor = ({ description, setDescription }) => {
+const TiptapEditor = ({
+  description,
+  setDescription,
+  clearTrigger,
+  onClearDone,
+}) => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: description,
@@ -12,6 +17,13 @@ const TiptapEditor = ({ description, setDescription }) => {
       setDescription(editor.getHTML());
     },
   });
+
+  useEffect(() => {
+    if (editor && clearTrigger) {
+      editor.commands.setContent(""); // ✅ Clear content
+      onClearDone(); // notify parent clear done
+    }
+  }, [clearTrigger]);
 
   if (!editor) return null;
 

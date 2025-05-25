@@ -56,6 +56,16 @@ const BlogList = () => {
         >
           Lifestyle
         </button>
+        <button
+          onClick={() => setMenu("Otomotif")}
+          className={
+            menu === "Otomotif"
+              ? "bg-black text-white py-1 px-4 rounded-sm"
+              : ""
+          }
+        >
+          Otomotif
+        </button>
       </div>
       <div className="flex flex-wrap justify-around gap-1 gap-y-10 mb-16 xl:mx-24">
         {blogs
