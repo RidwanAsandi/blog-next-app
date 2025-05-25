@@ -1,6 +1,7 @@
+import cloudinary from "@/lib/cloudinary";
 import ConnectDB from "@/lib/config/db";
 import BlogModel from "@/lib/models/BlogModel";
-import { writeFile } from "fs/promises";
+// import { writeFile } from "fs/promises";
 const fs = require("fs");
 
 const { NextResponse } = require("next/server");
@@ -36,7 +37,25 @@ export async function POST(request) {
   // const imgUrl = `/${timestamp}_${image.name}`;
   // console.log(imgUrl);
 
-  const imgUrl = "/default.png";
+  let imgUrl = "/default.png";
+  let imgPublicId = "default-img";
+
+  if (image && typeof image !== "string") {
+    const buffer = Buffer.from(await image.arrayBuffer());
+
+    // Convert buffer ke base64 string
+    const base64Image = `data:${image.type};base64,${buffer.toString(
+      "base64"
+    )}`;
+
+    // Upload ke Cloudinary
+    const uploadRes = await cloudinary.uploader.upload(base64Image, {
+      folder: "blog-images",
+    });
+
+    imgUrl = uploadRes.secure_url;
+    imgPublicId = uploadRes.public_id;
+  }
 
   const blogData = {
     title: `${formData.get("title")}`,
@@ -46,6 +65,7 @@ export async function POST(request) {
     // image: `${imgUrl}`,
     image: imgUrl,
     authorImg: `${formData.get("authorImg")}`,
+    imagePublicId: imgPublicId,
   };
 
   await BlogModel.create(blogData);
@@ -58,7 +78,23 @@ export async function DELETE(request) {
   await ConnectDB();
   const id = await request.nextUrl.searchParams.get("id");
   const blog = await BlogModel.findById(id);
-  fs.unlink(`./public${blog.image}`, () => {});
+  // if (blog.imagePublicId) {
+  //   await cloudinary.uploader.destroy(blog.imagePublicId);
+  // }
+  // fs.unlink(`./public${blog.image}`, () => {});
+  // await BlogModel.findByIdAndDelete(id);
+  // return NextResponse.json({ msg: "Blog Deleted" });
+  if (!blog) {
+    return NextResponse.json({ error: "Blog not found" }, { status: 404 });
+  }
+
+  // ✅ Hapus gambar dari Cloudinary jika public_id ada
+  if (blog.imagePublicId && blog.imagePublicId !== "default-img") {
+    const result = await cloudinary.uploader.destroy(blog.imagePublicId);
+    console.log("Cloudinary delete result:", result);
+  }
+
   await BlogModel.findByIdAndDelete(id);
+
   return NextResponse.json({ msg: "Blog Deleted" });
 }
